@@ -2,11 +2,12 @@
 
 import Image from 'next/image';
 import { useState } from "react";
-import CharacterThumbnail from "./CharacterThumbnail";
 import CharacterSelection from './CharacterSelection';
 
 const CharactersContainer = ({ characters }: { characters: Array<any> }) => {
     const [selectedCharacter, setSelectedCharacter] = useState(1)
+    const [currentPage, setCurrentPage] = useState(1)
+
     let characterData = characters.filter(c => c.id == selectedCharacter).map((d: any) => {
         const newData: any = {
             id: d.id,
@@ -84,7 +85,7 @@ const CharactersContainer = ({ characters }: { characters: Array<any> }) => {
                     </div>
                 </div>
             </div>
-            <CharacterSelection setSelectedCharacter={setSelectedCharacter} characters={characters} />
+            <CharacterSelection currentPage={currentPage} setCurrentPage={setCurrentPage} setSelectedCharacter={setSelectedCharacter} characters={characters} />
         </div>
     )
 }
