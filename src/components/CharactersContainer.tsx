@@ -48,11 +48,11 @@ const CharactersContainer = ({ characters }: { characters: Array<any> }) => {
     })[0]
     return (
         <div>
-            <div className="py-8 bg-gradient-to-r from-orange-400 via-red-700 to-red-900 font-one-piece text-shadow-sm shadow-black text-3xl border-y-[20px] border-black">
+            <div className="py-8 bg-gradient-to-br from-orange-300 via-red-500 to-red-900 font-one-piece text-shadow-sm shadow-black text-3xl border-y-[20px] border-black">
                 <div className="container mx-auto lg:flex gap-8 text-yellow-200 px-4">
                     <Image className="lg:flex-1 object-cover border-8 border-black aspect-square" width={500} height={500} alt={characterData.name} src={`/characters/${characterData.id}.png`} />
                     <div className="lg:flex-1 xl:flex-[2]">
-                        <div className="flex font-bold text-yellow-200 md:text-4xl lg:text-5xl xl:text-6xl py-8 pb-12">
+                        <div className="flex font-bold text-yellow-200 md:text-3xl lg:text-4xl xl:text-5xl py-8 pb-12">
                             <div>{characterData.name}</div>
                         </div>
                         {characterData.features && characterData.features.length > 0 &&
