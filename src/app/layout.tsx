@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { DM_Sans } from "next/font/google";
 import "./globals.css";
-import localFont from 'next/font/local'
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
-const onePieceFont = localFont({ src: '../font/One Piece - PERSONAL USE.woff', variable: '--font-one-piece' });
+const dmSans = DM_Sans({ subsets: ['latin']});
 
 export const metadata: Metadata = {
   title: "One Piece Characters Database",
@@ -35,7 +33,7 @@ export default function RootLayout({
 
         <link rel="icon" href="/favicon.ico" />
       </head>
-      <body className={`${onePieceFont.variable} ${inter.variable}`}>
+      <body className={`${dmSans.className}`}>
         {children}
       </body>
     </html>

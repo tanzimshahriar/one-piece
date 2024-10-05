@@ -1,3 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.image-skew {
+    transform: perspective(500px) rotateY(7deg);
+    transform-origin: center;
+}

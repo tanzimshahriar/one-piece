@@ -7,46 +7,45 @@ import CharacterSelection from './CharacterSelection';
 const CharactersContainer = ({ characters }: { characters: Array<any> }) => {
     const [selectedCharacter, setSelectedCharacter] = useState(characters[0])
     const [currentPage, setCurrentPage] = useState(1)
-    
+
     return (
-        <div>
-            <div className="py-8 bg-gradient-to-br from-orange-300 via-red-500 to-red-900 font-one-piece text-shadow-sm shadow-black text-3xl border-y-[20px] border-black">
-                <div className="container mx-auto lg:flex gap-8 text-yellow-200 px-4">
-                    <Image className="lg:flex-1 object-cover border-8 border-black aspect-square" width={500} height={500} alt={selectedCharacter?.name} src={`/characters/${selectedCharacter?.id}.png`} />
-                    <div className="lg:flex-1 xl:flex-[2]">
-                        <div className="flex font-bold text-yellow-200 md:text-3xl lg:text-4xl xl:text-5xl pt-8 pb-4 sm:pb-8 xl:pb-12 underline">
+        <>
+            <div className="flex-1 py-8 text-white font-light text-xs md:text-sm lg:text-base">
+                <div className="container mx-auto lg:flex gap-8 px-4">
+                    <div className="w-[250px] md:w-[400px] lg:w-[500px] xl:w-[700px]">
+                        <Image className="bg-black bg-opacity-30 lg:flex-1 object-cover border-8 border-black rounded-2xl image-skew aspect-square" width={500} height={500} alt={selectedCharacter?.name} src={`/characters/${selectedCharacter?.id}.png`} />
+                    </div>
+                    <div>
+                        <div className="flex font-bold md:text-3xl lg:text-4xl xl:text-5xl pt-8 pb-4 sm:pb-5 xl:pb-6 underline">
                             <div>{selectedCharacter?.name}</div>
                         </div>
                         {selectedCharacter &&
                             <div>
+                                {selectedCharacter.bounty &&
+                                    <div className="flex items-center gap-1 text-xs md:text-xl font-bold pb-4">
+                                        <div className="pt-1.5">WANTED DEAD OR ALIVE FOR </div>
+                                        <Image alt="Berry" className="rotate-12 invert" src="/berry.png" width={15} height={12} />
+                                        <div className="pt-1.5">{selectedCharacter.bounty}</div>
+                                    </div>
+                                }
                                 {
-                                        <div className="border-black text-yellow-200 py-1">
-                                            {selectedCharacter.bounty &&
-                                                <div className="flex items-center gap-1 py-4">
-                                                    <div className="pt-1.5">Wanted: </div>
-                                                    <Image alt="Berry" className="rotate-12" src="/berry.png" width={15} height={12} />
-                                                    <div className="pt-1.5">{selectedCharacter.bounty}</div>
-                                                </div>}
-                                            {selectedCharacter.job && selectedCharacter.crew?.name && <div className="py-4">{`${selectedCharacter.job} of ${selectedCharacter.crew.name}`}</div>}
-                                            {selectedCharacter.fruit &&
-                                                <div className="py-4 px-4 space-y-3">
-                                                    <div className="flex gap-6">
-                                                        <div className="pt-1.5">{selectedCharacter.fruit.name}</div>
-                                                        {selectedCharacter.fruit.filename && <div>
-                                                            <Image src={selectedCharacter.fruit.filename} alt={selectedCharacter.fruit} width={40} height={40} />
-                                                        </div>}
-                                                    </div>
-                                                    {selectedCharacter.fruit.description && <p className="text-base font-inter">{selectedCharacter.fruit.description}</p>}
-                                                </div>}
-                                        </div>
+                                    <div className="border-black py-1">
+                                        {selectedCharacter.description && <div>{selectedCharacter.description}</div>}
+
+                                        {selectedCharacter.fruit &&
+                                            <div>
+                                                <div className="pt-4 font-bold">Owner of {selectedCharacter.fruit.name}</div>
+                                                {selectedCharacter.fruit.description && <p className="pt-1 font-inter">{selectedCharacter.fruit.description}</p>}
+                                            </div>}
+                                    </div>
                                 }
                             </div>
                         }
                     </div>
                 </div>
             </div>
-            <CharacterSelection currentPage={currentPage} setCurrentPage={setCurrentPage} setSelectedCharacter={setSelectedCharacter} characters={characters} />
-        </div>
+            <CharacterSelection currentPage={currentPage} setCurrentPage={setCurrentPage} selectedCharacter={selectedCharacter} setSelectedCharacter={setSelectedCharacter} characters={characters} />
+        </>
     )
 }
 
