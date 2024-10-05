@@ -10,7 +10,7 @@ export default async function Home() {
       <nav className="container mx-auto flex justify-between items-center px-4">
         <Image alt='one-piece logo' src="/logo.png" width={150} height={100} />
         <div className="hidden lg:block text-3xl uppercase font-bold text-white">--Choose your hero--</div>
-        <Link href="https://github.com/tanzimshahriar/one-piece" className='bg-white rounded-full p-1 overflow-hidden'>
+        <Link target="_blank" href="https://github.com/tanzimshahriar/one-piece" className='bg-white rounded-full p-1 overflow-hidden'>
           <Image alt='source-code' className='bg-white' src="/github.png" width={30} height={30} />
         </Link>
       </nav>
