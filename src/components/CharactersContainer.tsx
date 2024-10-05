@@ -12,7 +12,7 @@ const CharactersContainer = ({ characters }: { characters: Array<any> }) => {
         <>
             <div className="flex-1 py-8 text-white font-light text-xs md:text-sm lg:text-base">
                 <div className="container mx-auto lg:flex gap-8 px-4">
-                    <div className="w-[250px] md:w-[400px] lg:w-[500px] xl:w-[700px]">
+                    <div className="w-[250px] sm:w-[400px] md:w-[400px] lg:w-[500px] xl:w-[600px]">
                         <Image className="bg-black bg-opacity-30 lg:flex-1 object-cover border-8 border-black rounded-2xl image-skew aspect-square" width={500} height={500} alt={selectedCharacter?.name} src={`/characters/${selectedCharacter?.id}.png`} />
                     </div>
                     <div>
