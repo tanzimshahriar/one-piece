@@ -1,43 +1,106 @@
-'use client'
+'use client';
 
-import CharacterThumbnail from "./CharacterThumbnail"
-import Image from "next/image"
+import Image from 'next/image';
+import CharacterThumbnail from './CharacterThumbnail';
 
-export const CHARS_PER_PAGE = 10
+export const CHARS_PER_PAGE = 10;
 
-const CharacterSelection = ({ characters, setSelectedCharacter, selectedCharacter, currentPage, setCurrentPage }: { characters: Array<any>; selectedCharacter: any; setSelectedCharacter: (index: number) => void; currentPage: number; setCurrentPage: (i: number) => void }) => {
-    const handlePageChange = (index: number) => {
-        setSelectedCharacter(characters[((index - 1) * CHARS_PER_PAGE)])
-        setCurrentPage(index)
-    }
+type Character = {
+  id: number;
+  name: string;
+};
 
-    return (
-        <>
-        <div className="my-4 md:my-8 lg:my-12 bg-slate-900 rounded-xl">
-            <div className='grid grid-cols-10 justify-center px-4'>
-                {characters.slice((currentPage - 1) * CHARS_PER_PAGE, CHARS_PER_PAGE * currentPage).map((character: any) => (
-                    <CharacterThumbnail characters={characters} isSelectedCharacter={selectedCharacter.id == character.id} setSelectedCharacter={setSelectedCharacter} key={character.id} character={character} />
-                ))}
-            </div>
-            
+type CharacterSelectionProps = {
+  characters: Character[];
+  setSelectedCharacter: (character: Character) => void;
+  selectedCharacter: Character;
+  currentPage: number;
+  setCurrentPage: (page: number) => void;
+};
+
+const CharacterSelection = ({
+  characters,
+  setSelectedCharacter,
+  selectedCharacter,
+  currentPage,
+  setCurrentPage,
+}: CharacterSelectionProps) => {
+  const pageCount = Math.ceil(characters.length / CHARS_PER_PAGE);
+  const pageCharacters = characters.slice(
+    (currentPage - 1) * CHARS_PER_PAGE,
+    currentPage * CHARS_PER_PAGE,
+  );
+
+  const handlePageChange = (page: number) => {
+    if (page < 1 || page > pageCount || page === currentPage) return;
+    setCurrentPage(page);
+    const firstCharacter = characters[(page - 1) * CHARS_PER_PAGE];
+    if (firstCharacter) setSelectedCharacter(firstCharacter);
+  };
+
+  return (
+    <section className="character-index" aria-label="Browse character records">
+      <div className="index-heading">
+        <div>
+          <div className="eyebrow"><span>02</span> / THE ROSTER</div>
+          <h3>Known figures <span>({characters.length})</span></h3>
         </div>
-        <div className="flex gap-2 flex-wrap pb-4 justify-center text-xs font-bold">
-                <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage == 1} className="flex shadow-lg justify-center items-center text-white text-xs w-6 h-6 lg:w-10 lg:h-10 bg-indigo-600 hover:bg-indigo-500 duration-300 rounded-full border-2 border-black">
-                    <Image src="/left.png" className="invert" alt="left icon" width={12} height={12} />
-                </button>
-                {
-                    Array((Math.floor(characters.length / CHARS_PER_PAGE) + (characters.length % CHARS_PER_PAGE === 0 ? 0 : 1))).fill(null).map((_, i) => (
-                        <button key={i} onClick={() => handlePageChange(i + 1)} className={`${currentPage === i + 1 ? 'bg-indigo-100 shadow-lg text-black' : ''} text-white w-6 h-6 lg:w-10 lg:h-10 bg-indigo-600 hover:bg-indigo-500 duration-300 rounded-full border-2 border-black`}>
-                            {i + 1}
-                        </button>
-                    ))
-                }
-                <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage == CHARS_PER_PAGE} className="flex shadow-lg justify-center items-center text-white text-xs w-6 h-6 lg:w-10 lg:h-10 bg-indigo-600 hover:bg-indigo-500 duration-300 rounded-full border-2 border-black">
-                    <Image src="/left.png" className="rotate-180 invert" alt="left icon" width={12} height={12} />
-                </button>
-            </div>
-        </>
-    )
-}
+        <span className="page-indicator">
+          PAGE <strong>{String(currentPage).padStart(2, '0')}</strong> / {String(pageCount).padStart(2, '0')}
+        </span>
+      </div>
 
-export default CharacterSelection
+      <div className="roster-grid">
+        {pageCharacters.map((character) => (
+          <CharacterThumbnail
+            key={character.id}
+            character={character}
+            isSelectedCharacter={selectedCharacter.id === character.id}
+            setSelectedCharacter={setSelectedCharacter}
+          />
+        ))}
+      </div>
+
+      <div className="roster-controls">
+        <span className="roster-hint">SELECT A RECORD TO VIEW DETAILS</span>
+        <div className="pagination" aria-label="Character pages">
+          <button
+            type="button"
+            className="page-arrow"
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            aria-label="Previous page"
+          >
+            <Image src="/left.png" alt="" width={14} height={14} />
+          </button>
+          {Array.from({ length: pageCount }, (_, index) => {
+            const page = index + 1;
+            return (
+              <button
+                type="button"
+                key={page}
+                onClick={() => handlePageChange(page)}
+                aria-current={currentPage === page ? 'page' : undefined}
+                aria-label={`Page ${page}`}
+                className={`page-number${currentPage === page ? ' is-active' : ''}`}
+              >
+                {String(page).padStart(2, '0')}
+              </button>
+            );
+          })}
+          <button
+            type="button"
+            className="page-arrow"
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === pageCount}
+            aria-label="Next page"
+          >
+            <Image src="/left.png" alt="" width={14} height={14} className="rotate-180" />
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default CharacterSelection;

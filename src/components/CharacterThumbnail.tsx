@@ -1,14 +1,40 @@
-import Image from 'next/image'
-const CharacterThumbnail = ({ characters, character, isSelectedCharacter, setSelectedCharacter }: { characters: Array<any>; character: any; isSelectedCharacter: boolean; setSelectedCharacter: (index: number) => void }) => {
-    return (
-        <div className='p-1 md:p-1.5 lg:p-2'>
-            <button className={`block w-full group rounded-lg h-full ${isSelectedCharacter ? 'border-2 lg:border-4 border-indigo-500' : ''}`} key={character.id} onClick={() => setSelectedCharacter(characters[character.id - 1])}>
-                <div className='flex rounded-lg overflow-hidden w-full h-full'>
-                    <Image className='flex-1 group-hover:scale-125 object-cover duration-300' src={`/characters/${character.id}.png`} alt={character.name} width={100} height={100} />
-                </div>
-            </button>
-        </div>
-    )
-}
+import Image from 'next/image';
 
-export default CharacterThumbnail
+type Character = {
+  id: number;
+  name: string;
+};
+
+const CharacterThumbnail = ({
+  character,
+  isSelectedCharacter,
+  setSelectedCharacter,
+}: {
+  character: Character;
+  isSelectedCharacter: boolean;
+  setSelectedCharacter: (character: Character) => void;
+}) => (
+  <button
+    type="button"
+    className={`roster-card${isSelectedCharacter ? ' is-selected' : ''}`}
+    onClick={() => setSelectedCharacter(character)}
+    aria-pressed={isSelectedCharacter}
+    aria-label={`View ${character.name}`}
+  >
+    <span className="roster-image-wrap">
+      <Image
+        className="roster-image"
+        src={`/characters/${character.id}.png`}
+        alt=""
+        width={120}
+        height={120}
+      />
+    </span>
+    <span className="roster-card-caption">
+      <span className="roster-number">{String(character.id).padStart(2, '0')}</span>
+      <span className="roster-name">{character.name}</span>
+    </span>
+  </button>
+);
+
+export default CharacterThumbnail;

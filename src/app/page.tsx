@@ -1,25 +1,54 @@
-import CharactersContainer from '@/components/CharactersContainer';
-import { characters } from '../../characters';
 import Image from 'next/image';
 import Link from 'next/link';
+import CharactersContainer from '@/components/CharactersContainer';
+import { characters } from '../../characters';
 
-export default async function Home() {
-
+export default function Home() {
   return (
-    <main className="bg-gradient-to-bl from-violet-900 to-pink-900 flex flex-col min-h-screen">
-      <nav className="container mx-auto flex justify-between items-center px-4">
-        <Image alt='one-piece logo' src="/logo.png" width={150} height={100} />
-        <div className="hidden lg:block text-3xl uppercase font-bold text-white">--Choose your hero--</div>
-        <Link target="_blank" href="https://github.com/tanzimshahriar/one-piece" className='bg-white rounded-full p-1 overflow-hidden'>
-          <Image alt='source-code' className='bg-white' src="/github.png" width={30} height={30} />
-        </Link>
-      </nav>
-      <div className='container px-4 mx-auto relative font-inter flex flex-col flex-1'>
+    <main className="archive-shell min-h-screen overflow-hidden text-white">
+      <header className="site-header">
+        <div className="page-width flex h-[72px] items-center justify-between">
+          <Link href="/" aria-label="One Piece archive home" className="brand-mark">
+            <Image src="/logo.png" alt="One Piece" width={124} height={58} priority />
+            <span className="brand-divider" />
+            <span className="brand-caption">CHARACTER<br />ARCHIVE</span>
+          </Link>
+          <div className="hidden items-center gap-2 text-[11px] font-semibold tracking-[0.18em] text-white/55 sm:flex">
+            <span className="status-dot" />
+            GRAND LINE DATABASE
+          </div>
+          <Link
+            target="_blank"
+            rel="noreferrer"
+            href="https://github.com/tanzimshahriar/one-piece"
+            className="source-link"
+            aria-label="View source code on GitHub"
+          >
+            <Image alt="" src="/github.png" width={17} height={17} />
+            <span className="hidden sm:inline">SOURCE</span>
+            <span aria-hidden="true" className="source-arrow">↗</span>
+          </Link>
+        </div>
+      </header>
+
+      <div className="page-width">
+        <div className="archive-heading">
+          <div>
+            <div className="eyebrow"><span>01</span> / THE WANTED INDEX</div>
+            <h1>Every legend<br /><em>has a price.</em></h1>
+          </div>
+          <p className="heading-note">
+            A living record of the pirates, allies, and outlaws shaping the age of the sea.
+          </p>
+        </div>
+
         <CharactersContainer characters={characters} />
+
+        <footer className="archive-footer">
+          <span>ONE PIECE CHARACTER ARCHIVE</span>
+          <span>SAIL BEYOND THE ORDINARY <span className="footer-star">✳</span></span>
+        </footer>
       </div>
-      {/* <Image className='absolute grayscale-[70%] -z-10 w-full h-full object-cover' alt="background" src="/characters/zoro.png" width={1000} height={1000} /> */}
-      {/* <div className='absolute -z-10 bg-gradient-to-t from-black to-violet-900 opacity-60 w-full h-full object-cover'></div> */}
-      
     </main>
   );
 }
