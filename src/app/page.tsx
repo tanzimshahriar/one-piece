@@ -1,9 +1,21 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import CharactersContainer from '@/components/CharactersContainer';
-import { characters } from '../../characters';
+import { CHARACTERS_PER_PAGE, fetchCharacters, type Character } from '@/lib/characters';
 
-export default function Home() {
+export const dynamic = 'force-dynamic';
+
+export default async function Home() {
+  let characters: Character[] = [];
+  let loadError: string | null = null;
+
+  try {
+    characters = await fetchCharacters(1);
+  } catch (error) {
+    console.error('Unable to load One Piece character archive.', error);
+    loadError = error instanceof Error ? error.message : 'Unable to load character records.';
+  }
+
   return (
     <main className="archive-shell min-h-screen overflow-hidden text-white">
       <header className="site-header">
@@ -42,7 +54,11 @@ export default function Home() {
           </p>
         </div>
 
-        <CharactersContainer characters={characters} />
+        <CharactersContainer
+          initialCharacters={characters}
+          initialError={loadError}
+          initialHasNextPage={characters.length === CHARACTERS_PER_PAGE}
+        />
 
         <footer className="archive-footer">
           <span>ONE PIECE CHARACTER ARCHIVE</span>

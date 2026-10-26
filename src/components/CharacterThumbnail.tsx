@@ -1,16 +1,14 @@
 import Image from 'next/image';
-
-type Character = {
-  id: number;
-  name: string;
-};
+import type { Character } from '@/lib/characters';
 
 const CharacterThumbnail = ({
   character,
+  characterName,
   isSelectedCharacter,
   setSelectedCharacter,
 }: {
   character: Character;
+  characterName: string;
   isSelectedCharacter: boolean;
   setSelectedCharacter: (character: Character) => void;
 }) => (
@@ -19,20 +17,27 @@ const CharacterThumbnail = ({
     className={`roster-card${isSelectedCharacter ? ' is-selected' : ''}`}
     onClick={() => setSelectedCharacter(character)}
     aria-pressed={isSelectedCharacter}
-    aria-label={`View ${character.name}`}
+    aria-label={`View ${characterName}`}
   >
     <span className="roster-image-wrap">
-      <Image
-        className="roster-image"
-        src={`/characters/${character.id}.png`}
-        alt=""
-        width={120}
-        height={120}
-      />
+      {character.image_url ? (
+        <Image
+          className="roster-image"
+          src={character.image_url}
+          alt=""
+          width={120}
+          height={120}
+          unoptimized
+        />
+      ) : (
+        <span className="roster-image-fallback" aria-hidden="true">
+          {characterName.slice(0, 1)}
+        </span>
+      )}
     </span>
     <span className="roster-card-caption">
-      <span className="roster-number">{String(character.id).padStart(2, '0')}</span>
-      <span className="roster-name">{character.name}</span>
+      <span className="roster-number">{character.id.slice(0, 6).toUpperCase()}</span>
+      <span className="roster-name">{characterName}</span>
     </span>
   </button>
 );

@@ -2,13 +2,7 @@
 
 import Image from 'next/image';
 import CharacterThumbnail from './CharacterThumbnail';
-
-export const CHARS_PER_PAGE = 10;
-
-type Character = {
-  id: number;
-  name: string;
-};
+import { getCharacterName, type Character } from '@/lib/characters';
 
 type CharacterSelectionProps = {
   characters: Character[];
@@ -16,6 +10,12 @@ type CharacterSelectionProps = {
   selectedCharacter: Character;
   currentPage: number;
   setCurrentPage: (page: number) => void;
+  isLoading: boolean;
+  hasNextPage: boolean;
+  searchInput: string;
+  setSearchInput: (query: string) => void;
+  onSearch: (query: string) => void;
+  searchQuery: string;
 };
 
 const CharacterSelection = ({
@@ -24,83 +24,106 @@ const CharacterSelection = ({
   selectedCharacter,
   currentPage,
   setCurrentPage,
-}: CharacterSelectionProps) => {
-  const pageCount = Math.ceil(characters.length / CHARS_PER_PAGE);
-  const pageCharacters = characters.slice(
-    (currentPage - 1) * CHARS_PER_PAGE,
-    currentPage * CHARS_PER_PAGE,
-  );
+  isLoading,
+  hasNextPage,
+  searchInput,
+  setSearchInput,
+  onSearch,
+  searchQuery,
+}: CharacterSelectionProps) => (
+  <section className="character-index" aria-label="Browse character records" aria-busy={isLoading}>
+    <div className="index-heading">
+      <div>
+        <div className="eyebrow"><span>02</span> / THE ROSTER</div>
+        <h3>{searchQuery ? 'Search results' : 'Known figures'}</h3>
+      </div>
+      <span className="page-indicator">
+        PAGE <strong>{String(currentPage).padStart(2, '0')}</strong>
+      </span>
+    </div>
 
-  const handlePageChange = (page: number) => {
-    if (page < 1 || page > pageCount || page === currentPage) return;
-    setCurrentPage(page);
-    const firstCharacter = characters[(page - 1) * CHARS_PER_PAGE];
-    if (firstCharacter) setSelectedCharacter(firstCharacter);
-  };
+    <form
+      className="character-search"
+      role="search"
+      onSubmit={(event) => {
+        event.preventDefault();
+        onSearch(searchInput);
+      }}
+    >
+      <label className="sr-only" htmlFor="character-search">Search characters</label>
+      <input
+        id="character-search"
+        type="search"
+        value={searchInput}
+        onChange={(event) => setSearchInput(event.target.value)}
+        placeholder="Search characters by name…"
+        maxLength={100}
+      />
+      {searchInput && (
+        <button
+          type="button"
+          className="search-clear"
+          onClick={() => {
+            setSearchInput('');
+            onSearch('');
+          }}
+          disabled={isLoading}
+          aria-label="Clear search"
+        >
+          Clear
+        </button>
+      )}
+      <button type="submit" className="search-submit" disabled={isLoading}>
+        {isLoading ? 'SEARCHING…' : 'SEARCH'}
+      </button>
+    </form>
 
-  return (
-    <section className="character-index" aria-label="Browse character records">
-      <div className="index-heading">
-        <div>
-          <div className="eyebrow"><span>02</span> / THE ROSTER</div>
-          <h3>Known figures <span>({characters.length})</span></h3>
-        </div>
-        <span className="page-indicator">
-          PAGE <strong>{String(currentPage).padStart(2, '0')}</strong> / {String(pageCount).padStart(2, '0')}
+    <div className={`roster-grid${isLoading ? ' is-loading' : ''}`}>
+      {characters.map((character) => (
+        <CharacterThumbnail
+          key={character.id}
+          character={character}
+          characterName={getCharacterName(character.name, character.id)}
+          isSelectedCharacter={selectedCharacter?.id === character.id}
+          setSelectedCharacter={setSelectedCharacter}
+        />
+      ))}
+    </div>
+    {characters.length === 0 && (
+      <p className="search-empty">
+        {searchQuery ? `No characters found for “${searchQuery}”.` : 'No character records found.'}
+      </p>
+    )}
+
+    <div className="roster-controls">
+      <span className="roster-hint">
+        {isLoading ? 'LOADING RECORDS…' : searchQuery ? `RESULTS FOR “${searchQuery}”` : 'SELECT A RECORD TO VIEW DETAILS'}
+      </span>
+      <div className="pagination" aria-label="Character pages">
+        <button
+          type="button"
+          className="page-arrow"
+          onClick={() => setCurrentPage(currentPage - 1)}
+          disabled={currentPage === 1 || isLoading}
+          aria-label="Previous page"
+        >
+          <Image src="/left.png" alt="" width={14} height={14} />
+        </button>
+        <span className="page-number is-active" aria-current="page">
+          {String(currentPage).padStart(2, '0')}
         </span>
+        <button
+          type="button"
+          className="page-arrow"
+          onClick={() => setCurrentPage(currentPage + 1)}
+          disabled={!hasNextPage || isLoading}
+          aria-label="Next page"
+        >
+          <Image src="/left.png" alt="" width={14} height={14} className="rotate-180" />
+        </button>
       </div>
-
-      <div className="roster-grid">
-        {pageCharacters.map((character) => (
-          <CharacterThumbnail
-            key={character.id}
-            character={character}
-            isSelectedCharacter={selectedCharacter.id === character.id}
-            setSelectedCharacter={setSelectedCharacter}
-          />
-        ))}
-      </div>
-
-      <div className="roster-controls">
-        <span className="roster-hint">SELECT A RECORD TO VIEW DETAILS</span>
-        <div className="pagination" aria-label="Character pages">
-          <button
-            type="button"
-            className="page-arrow"
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1}
-            aria-label="Previous page"
-          >
-            <Image src="/left.png" alt="" width={14} height={14} />
-          </button>
-          {Array.from({ length: pageCount }, (_, index) => {
-            const page = index + 1;
-            return (
-              <button
-                type="button"
-                key={page}
-                onClick={() => handlePageChange(page)}
-                aria-current={currentPage === page ? 'page' : undefined}
-                aria-label={`Page ${page}`}
-                className={`page-number${currentPage === page ? ' is-active' : ''}`}
-              >
-                {String(page).padStart(2, '0')}
-              </button>
-            );
-          })}
-          <button
-            type="button"
-            className="page-arrow"
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage === pageCount}
-            aria-label="Next page"
-          >
-            <Image src="/left.png" alt="" width={14} height={14} className="rotate-180" />
-          </button>
-        </div>
-      </div>
-    </section>
-  );
-};
+    </div>
+  </section>
+);
 
 export default CharacterSelection;
