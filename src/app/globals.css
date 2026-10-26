@@ -930,3 +930,62 @@ a:focus-visible {
     transition-duration: 0.01ms !important;
   }
 }
+
+.catalog-grid:not(.catalog-grid--characters) {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.catalog-card {
+  display: flex;
+  min-height: 66px;
+  align-items: center;
+  gap: 9px;
+  padding: 5px;
+}
+
+.record-art--thumbnail {
+  width: 46px;
+  height: 50px;
+  flex: none;
+  aspect-ratio: auto;
+}
+
+.record-art--thumbnail .art-coordinate {
+  display: none;
+}
+
+.record-art--thumbnail .art-placeholder {
+  font-size: 31px;
+}
+
+.catalog-card-copy {
+  min-height: 0;
+  gap: 4px;
+  padding: 0 2px;
+}
+
+.catalog-card-meta {
+  font-size: 7px;
+}
+
+.catalog-card-name {
+  font-size: 13px;
+}
+
+.catalog-card--affiliation {
+  min-height: 66px;
+  padding: 5px;
+}
+
+@media (max-width: 940px) {
+  .catalog-grid:not(.catalog-grid--characters) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .catalog-grid:not(.catalog-grid--characters) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
